@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Reddit+Sans+Condensed:wght@200..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/account.css">
+    <script src="/account.js"></script>
+  </head>
+    <body>
+
+        <header>
+            <h1 id="Title"> Языковая школа </h1>
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="/index.html" class="active">Главная страница</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>    
+            </nav>
+        </header>
+
+        <main>
+            <div id="notification-container"></div>
+            <button onclick="addNotification('Скидка 10% при записи ', 'success')">Посмотреть выгодные предложения</button>
+        </main>
+
+    </body>

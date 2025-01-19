@@ -101,10 +101,44 @@ function changePage(page) {
     currentPage = page;
     loadOrders(page); // Загружаем заказы для новой страницы
 }
-// Функция для отображения деталей заказа (пример)
-function showDetails(orderId) {
-    alert(`Показать детали заказа с ID: ${orderId}`);
+// Функция для отображения деталей заказа
+async function showDetails(orderId) {
+    const apiUrl = `http://cat-facts-api.std-900.ist.mospolytech.ru/api/orders/${orderId}?api_key=a2973cdd-d303-48f2-a6b6-78ff07878f95`;
+
+    try {
+        // Отправляем GET-запрос для получения деталей заказа
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error(`Ошибка HTTP: ${response.status}`);
+        }
+
+        // Получаем данные заказа в формате JSON
+        const order = await response.json();
+
+        const modalBody = document.querySelector("#detailsModal .modal-body");
+        modalBody.innerHTML = `
+            <p><strong>ID заказа:</strong> ${order.id}</p>
+            <p><strong>Название курса:</strong> ${order.courseName}</p>
+            <p><strong>Дата начала:</strong> ${order.date_start}</p>
+            <p><strong>Стоимость:</strong> ${order.price} руб.</p>
+            <p><strong>Количество участников:</strong> ${order.persons}</p>
+            <p><strong>Дополнительные опции:</strong></p>
+            <ul>
+                <li><strong>Ранняя регистрация:</strong> ${order.earlyRegistration ? "Да" : "Нет"}</li>
+                <li><strong>Групповое обучение:</strong> ${order.groupEnrollment ? "Да" : "Нет"}</li>
+            </ul>
+        `;
+
+        // Показываем модальное окно
+        const detailsModal = new bootstrap.Modal(document.getElementById("detailsModal"));
+        detailsModal.show();
+    } catch (error) {
+        console.error("Ошибка при загрузке деталей заказа:", error);
+        alert("Не удалось загрузить детали заказа. Попробуйте позже.");
+    }
 }
+
 
 let orderIdToEdit = null; // Хранит ID заказа, который нужно редактировать
 

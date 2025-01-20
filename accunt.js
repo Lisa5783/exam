@@ -28,9 +28,15 @@ async function loadOrders(page = 1) {
     }
 }
 
+
 // Функция для получения названия курса по его ID
 async function fetchCourseName(courseId) {
-    const apiUrl = `http://cat-facts-api.std-900.ist.mospolytech.ru/api/courses/${courseId}?api_key=a2973cdd-d303-48f2-a6b6-78ff07878f95`;
+    // Если ID курса равен 7, возвращаем фиксированное название
+    if (courseId === 7) {
+        return "Занятие с репетитором";
+    }
+
+    const apiUrl = `http://cat-facts-api.std-900.ist.mospolytech.ru/api/courses/?api_key=a2973cdd-d303-48f2-a6b6-78ff07878f95`;
 
     try {
         const response = await fetch(apiUrl);
@@ -49,15 +55,19 @@ async function fetchCourseName(courseId) {
 
 
 // Функция для отображения заказов в таблице
-function displayOrders(orders) {
+async function displayOrders(orders) {
     const tableBody = document.getElementById("ordersTableBody");
     tableBody.innerHTML = ""; // Очищаем таблицу
 
-    orders.forEach((order, index) => {
+    for (const order of orders) {
+        // Получаем название курса по его ID
+        const courseName = await fetchCourseName(order.courseId);
+
+        // Создаём строку таблицы
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${order.id}</td>
-            <td>${order.courseName}</td>
+            <td>${courseName}</td>
             <td>${order.date_start}</td>
             <td>${order.price} руб.</td>
             <td>
@@ -67,7 +77,7 @@ function displayOrders(orders) {
             </td>
         `;
         tableBody.appendChild(row);
-    });
+    }
 }
 
 // Функция для отображения кнопок пагинации
@@ -279,31 +289,3 @@ document.addEventListener("DOMContentLoaded", loadOrders);
 let allCourses = []; // Все курсы (загружаются из API)
 let filteredCourses = []; // Отфильтрованные курсы
 const ITEMS_PER_PAGE = 3; // Количество курсов на странице
-
-// Функция для получения данных о курсах через API
-async function fetchCourses() {
-    const apiUrl = "http://cat-facts-api.std-900.ist.mospolytech.ru/api/courses?api_key=a2973cdd-d303-48f2-a6b6-78ff07878f95";
-
-    try {
-        const response = await fetch(apiUrl);
-
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
-        
-        allCourses = await response.json(); // Сохраняем все курсы в переменную
-        console.log("Данные успешно загружены:", allCourses);
-    } catch (error) {
-        console.error("Ошибка при загрузке данных из API:", error);
-        alert("Не удалось загрузить данные о курсах. Попробуйте позже.");
-    }
-}
-document.addEventListener("DOMContentLoaded", fetchCourses);
-// Загрузка данных при загрузке страницы
-document.addEventListener("DOMContentLoaded", async () => {
-    await fetchCourses(); // Загружаем данные о курсах из API
-
-    filteredCourses = [...allCourses]; // Изначально отображаем все курсы
-    setupPagination(filteredCourses); // Настраиваем пагинацию для всех курсов
-    renderCourses(filteredCourses, currentPage); // Отображаем первую страницу всех курсов
-});

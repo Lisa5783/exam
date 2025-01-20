@@ -106,6 +106,7 @@ function displayPagination(currentPage, totalPages) {
     paginationContainer.appendChild(nextButton);
 }
 
+
 // Функция для смены страницы
 function changePage(page) {
     currentPage = page;
